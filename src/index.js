@@ -4,7 +4,7 @@ import cluster from 'cluster';
 import os from 'os';
 import Config from './config/index'
 
-import { dbConnection } from './db/connection';
+import { MongoDB } from './db/connection';
 import Server from './services/server';
 import logger from './config/logger'
 
@@ -27,17 +27,20 @@ if (clusterMode && cluster.isMaster) {
     cluster.fork();
   });
 } else {
-dbConnection()
-.then(result => {
+
+  const connection = new MongoDB()
+  connection.connect().then(res=> console.log('conectado'))
  
-  Server.listen(PORT, () =>
+
+  Server.listen(PORT, () =>{
   logger.info(
     `Servidor express escuchando en el puerto ${PORT} - PID WORKER ${process.pid}`
   )
+  }
 );
-   
-  })
-  .catch(err => {
-    logger.error(err);
-  });
+ 
+
+ 
+ 
+  
 }

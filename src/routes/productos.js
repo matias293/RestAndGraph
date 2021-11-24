@@ -10,7 +10,7 @@ router.get('/vista-test', productsController.getProductsFake);
 
  router.get('/productos/listar/:id', productsController.getProduct);
 
- router.post('/productos/agregar',productsController.postProduct);
+ router.post('/productos/agregar', productsController.validar,productsController.postProduct);
  
  router.put('/productos/actualizar/:id', productsController.updateProduct);
 

@@ -1,32 +1,47 @@
 import faker from 'faker'
+import Joi from 'joi'
 
 import { productsPersistencia } from "../persistencia/productos"
 
 class Producto {
+    validar(req, res, next) {
+        const productSchema = Joi.object({
+          title: Joi.string().alphanum().required(),
+          price: Joi.number().required(),
+          thumbnail: Joi.string().required()
+        });
+        const { error } = productSchema.validate(req.body);
+        if (error) return res.status(400).json({ msg: 'invalid body params' });
+        else next();
+    }
+
     getProducts = async(req,res) => {
         
+       
        let productos = await productsPersistencia.getAll()
+       
        if (productos.length === 0) {
         return res.status(404).json({ error: 'No hay productos cargados' });
         } else {
-        res.json({
+            
+        res.json(
             productos
-        })
+        )
        }
        
     }
 
-    getProduct = async(req,res) => {
-        const {id} = req.params 
-            let product = await productsPersistencia.getProduct(id)
-            if(product.length === 0){
-                return res.status(404).json({ error: 'No existe producto con ese id' });
-            }
-            else {
-                res.json({
-                    product
-                })
-            }
+    getProduct = async(req,res,next) => {
+        let {id} = req.params 
+     try {
+         
+        let product = await productsPersistencia.getProduct(id)
+     
+         return res.json(product)
+        
+     } catch (error) {
+        next(error);
+     }
     }
 
     getProductsFake = async(req,res) => {
@@ -60,45 +75,47 @@ class Producto {
 
     postProduct = async(req,res) => {
         const body = req.body
-         await productsPersistencia.add(body)
-        res.json({
-            msg : 'Producto fue agregado exitosamente'
-        })
+     try {
+         
+         const newProduct =  await productsPersistencia.add(body)
+         res.json(newProduct)
+
+     } catch (error) {
+         
+     }
 
      }
 
-     updateProduct = async(req,res) => {
+     updateProduct = async(req,res,next) => {
         const {id} = req.params 
         const body = req.body
-         let product = await productsPersistencia.update(id,body)
-         if(product === 0){
-            res.json({
-                msg:'No existe un producto con ese id'
-            })
+        try {
+           await productsPersistencia.getProduct(id)
+            const product = await productsPersistencia.update(id,body)
+          return  res.json(product)
+        } catch (error) {
+            next(error)
         }
-        else{
-            res.json({
-                msg:'Producto Actualizado correctamente',
-                product
-             })
-        }
+        
+        
             
      }
 
      deleteProduct = async(req,res) =>  {
         const {id} = req.params 
-        let product =  await productsPersistencia.delete(id)
-        if(product === 0){
+        try {
+            await productsPersistencia.getProduct(id)
+            await productsPersistencia.delete(id)
+       
             res.json({
-                msg:'No existe un producto con ese id'
-            })
+              msg: 'Producto Eliminado exitosamente',
+                       
+                   })
+        } catch (error) {
+            next(error)
         }
-        else{
-                res.json({
-                    msg: 'Producto Eliminado exitosamente',
-                    
-                })
-            }
+       
+            
      }
 }
 

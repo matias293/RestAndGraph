@@ -1,11 +1,13 @@
 import {buildSchema} from 'graphql'
 
 import {createPost,
-        posts} from './resolvers'
+        posts,
+      post} from './resolvers'
 
 export const graphqlSchema = buildSchema(`
       type Query {
         posts: [Post]
+        post(id:ID!): Post
       },
       type Mutation {
         createPost(postInput: PostInputData) : Post
@@ -28,6 +30,7 @@ export const graphqlSchema = buildSchema(`
 
 export const graphqlRoot = {
     createPost,
-    posts
+    posts,
+    post
 }
 

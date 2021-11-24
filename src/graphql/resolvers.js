@@ -23,6 +23,11 @@ import {productsPersistencia} from '../persistencia/productos'
     }
  
 
- 
+    export const post  =  async ({ id }, req) => {
+
+      const products = await productsPersistencia.getProduct(id)
+         
+      return products
+    }
 
 

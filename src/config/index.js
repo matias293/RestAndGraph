@@ -7,6 +7,7 @@ dotenv.config();
 export default {
     PORT:process.env.PORT,
     MONGO_INGRESS: process.env.MONGO,
+    MONGO_TEST:process.env.MONGO_TEST,
     FACEBOOK_APP_ID: process.env.FACEBOOK_ID,
     FACEBOOK_APP_SECRET: process.env.SECRET_FACEBOOK,
     ETHEREAL_NAME:process.env.ETHEREAL_NAME,
@@ -17,6 +18,7 @@ export default {
     GMAIL_PASSWORD: process.env.GMAIL_PASSWORD,
     TWILIO_ACCOUNT_ID: process.env.TWILIO_ACCOUNT_ID,
     TWILIO_TOKEN: process.env.TWILIO_TOKEN,
-    TWILIO_CELLPHONE: process.env.TWILIO_CELLPHONE
+    TWILIO_CELLPHONE: process.env.TWILIO_CELLPHONE,
+    MONGOLOCAL_INGRESS:process.env.MONGOLOCAL_INGRESS
     }
 

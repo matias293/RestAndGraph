@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import * as http from 'http';
 import io from 'socket.io';
+
 import session from 'express-session';
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo';
@@ -17,6 +18,9 @@ import authRouter from '../routes/auth'
 import { productsPersistencia } from '../persistencia/productos';
 import { mensajesPersistencia } from '../persistencia/mensajes';
 import Config from '../config/index'
+
+
+
 
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
@@ -65,8 +69,16 @@ app.use('/graphql', graphqlHTTP({
   graphiql:true,
 })
 )
-
-
+const errorHandler = (error, req, res, next) => {
+  res.status(error.statusCode || 500)
+  res.send({
+    error: {
+      status: error.statusCode || 500,
+      message: error.message,
+    },
+  })
+};
+app.use(errorHandler);
 
 app.use('/',(req,res,next)=>{
 
@@ -86,7 +98,7 @@ app.use('/',(req,res,next)=>{
 
 
 
-const myServer = new http.Server(app);
+export const myServer = new http.Server(app);
 
 const myWSServer = io(myServer);
 
